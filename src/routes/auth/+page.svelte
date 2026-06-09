@@ -5,14 +5,15 @@
 	import { Input } from '$lib/components/ui/input';
 	import { Label } from '$lib/components/ui/label';
 	import { Button } from '$lib/components/ui/button';
-  import { account } from '$lib/appwrite';
-  import { ID } from 'appwrite';
+  import { AppwriteException, ID } from 'appwrite';
   import { Eye, EyeOff } from '@lucide/svelte';
-    import { text } from '@sveltejs/kit';
+  import { auth } from '$lib/stores/auth.svelte';
+  import { goto } from '$app/navigation';
+  import { toast } from 'svelte-sonner';
 
 	// We will wire these into Appwrite's auth SDK later
-	let email = '';
-	let fullName = '';
+	let email = $state('');
+	let fullName = $state('');
 	let password = $state('');
   let confirm = $state('');
 
@@ -21,21 +22,62 @@
   let showConfirmPassword = $state(false);
 	
 	let isLoading = $state(false);
+  let errorMessage = $state('')
+
+  $effect(() => {
+    if (toast !== '' && errorMessage.length > 0) {
+      toast(errorMessage)
+    }
+  })
 
 	const handleLogin = async () => {
+    if (!email || !password) {
+      errorMessage = "Please fill in all fields"
+      return;
+    }
+
 		isLoading = true;
-		// Appwrite account.createEmailPasswordSession() goes here
-		console.log('Logging in with', email);
-		setTimeout(() => (isLoading = false), 1000);
+    errorMessage = '';
+
+    try {
+      await auth.login(email, password)
+      goto('/home')
+    } catch (error) {
+      if (error instanceof AppwriteException) {
+        errorMessage = error.message;
+      } else {
+        errorMessage = "An unexpected error occured."
+      }
+    } finally {
+      isLoading = false;
+    }
 	};
 
 	const handleSignup = async () => {
-    console.log("Logging in")
+    if (!email || !password || !fullName) {
+      errorMessage = "Please fill in all fields!"
+      return;
+    }
+    if (password != confirm) {
+      errorMessage = "Passwords do not match!"
+      return;
+    }
+
 		isLoading = true;
-		// Appwrite account.create() goes here
-    const uniqueID = ID.unique()
-		console.log('Signing up', uniqueID, fullName, email);
-		setTimeout(() => (isLoading = false), 1000);
+    errorMessage = '';
+
+    try {
+      await auth.register(email, password, fullName)
+      goto('/home')
+    } catch (error) {
+      if (error instanceof AppwriteException) {
+        errorMessage = error.message;
+      } else {
+        errorMessage = "An unexpected error occured."
+      }
+    } finally {
+      isLoading = false;
+    }
 	};
 </script>
 

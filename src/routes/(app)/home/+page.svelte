@@ -1,16 +1,8 @@
 <script lang="ts">
-  import "../../app.css";
   import { client } from "$lib/appwrite";
   import { AppwriteException } from "appwrite";
-  import {
-    PUBLIC_APPWRITE_ENDPOINT,
-    PUBLIC_APPWRITE_PROJECT_ID,
-    PUBLIC_APPWRITE_PROJECT_NAME,
-  } from "$env/static/public";
   import { writable } from "svelte/store";
   import { onMount } from "svelte";
-  import appwriteSvg from "../../../static/appwrite-icon.svg";
-  import svelteSvg from "../../../static/svelte.svg";
 
   let detailHeight = writable(0);
 
@@ -81,4 +73,6 @@
 <main
   class="checker-background flex flex-col items-center p-5"
   style={`margin-bottom: ${$detailHeight}px`}
-></main>
+>
+  Sup yall
+</main>

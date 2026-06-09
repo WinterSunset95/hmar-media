@@ -1,15 +1,29 @@
 import { account } from "$lib/appwrite"
-export const ssr = false;
-export const prerender = true;
+import { redirect } from "@sveltejs/kit"
 
-export const load  = async () => {
+export const ssr = false;
+
+export const load = async ({ url }) => {
+  let currentUser = null;
+
   try {
-    return {
-      account: await account.get()
-    }
+    currentUser = await account.get()
   } catch {
-    return {
-      account: null
-    }
+    currentUser = null
   }
+
+  const isAuthRoute = url.pathname.startsWith('/auth');
+
+  if (!currentUser && !isAuthRoute) {
+    throw redirect(307, '/auth')
+  }
+
+  if (currentUser && isAuthRoute) {
+    throw redirect(307, '/home')
+  }
+
+  return {
+    account: currentUser
+  }
+  
 }
