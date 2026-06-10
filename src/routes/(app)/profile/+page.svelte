@@ -4,7 +4,7 @@
   import { auth } from "$lib/stores/auth.svelte";
 
   const handleLogout = async () => {
-    auth.logout()
+    await auth.logout()
     goto('/home')
   }
 </script>
