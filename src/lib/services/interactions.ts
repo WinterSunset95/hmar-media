@@ -1,7 +1,7 @@
 import { databases } from '$lib/appwrite';
 import { Query, ID } from 'appwrite';
 import type { Interaction, InteractionType } from '$lib/types';
-import { DATABASE_ID } from '$env/static/private';
+import { PUBLIC_DATABASE_ID } from '$env/static/public';
 
 const TABLE_ID = 'interactions';
 
@@ -12,7 +12,7 @@ export const InteractionService = {
 	async getUserInteractions(userId: string, type: InteractionType): Promise<Interaction[]> {
 		try {
 			const response = await databases.listDocuments<Interaction>(
-				DATABASE_ID,
+				PUBLIC_DATABASE_ID,
 				TABLE_ID,
 				[
 					Query.equal('userId', userId),
@@ -35,7 +35,7 @@ export const InteractionService = {
 		try {
 			// Check if interaction already exists using our optimized compound index search parameters
 			const existing = await databases.listDocuments<Interaction>(
-				DATABASE_ID,
+				PUBLIC_DATABASE_ID,
 				TABLE_ID,
 				[
 					Query.equal('userId', userId),
@@ -48,12 +48,12 @@ export const InteractionService = {
 			if (existing.total > 0) {
 				// Record exists -> Delete it (Unlike / Remove from wishlist)
 				const docId = existing.documents[0].$id;
-				await databases.deleteDocument(DATABASE_ID, TABLE_ID, docId);
+				await databases.deleteDocument(PUBLIC_DATABASE_ID, TABLE_ID, docId);
 				return false; // Returns false indicating the state is now inactive
 			} else {
 				// Record does not exist -> Create it
 				await databases.createDocument(
-					DATABASE_ID,
+					PUBLIC_DATABASE_ID,
 					TABLE_ID,
 					ID.unique(),
 					{
@@ -77,7 +77,7 @@ export const InteractionService = {
 	async updateWatchProgress(userId: string, movieId: string, progressSeconds: number): Promise<void> {
 		try {
 			const existing = await databases.listDocuments<Interaction>(
-				DATABASE_ID,
+				PUBLIC_DATABASE_ID,
 				TABLE_ID,
 				[
 					Query.equal('userId', userId),
@@ -97,9 +97,9 @@ export const InteractionService = {
 
 			if (existing.total > 0) {
 				const docId = existing.documents[0].$id;
-				await databases.updateDocument(DATABASE_ID, TABLE_ID, docId, payload);
+				await databases.updateDocument(PUBLIC_DATABASE_ID, TABLE_ID, docId, payload);
 			} else {
-				await databases.createDocument(DATABASE_ID, TABLE_ID, ID.unique(), payload);
+				await databases.createDocument(PUBLIC_DATABASE_ID, TABLE_ID, ID.unique(), payload);
 			}
 		} catch (error) {
 			console.error(`[InteractionService.updateWatchProgress] Failed for movie ${movieId}:`, error);

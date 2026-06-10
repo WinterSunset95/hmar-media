@@ -1,7 +1,7 @@
 import { databases } from '$lib/appwrite';
 import { Query, ID } from 'appwrite';
 import type { Rental } from '$lib/types';
-import { DATABASE_ID } from '$env/static/private';
+import { PUBLIC_DATABASE_ID } from '$env/static/public';
 
 const TABLE_ID = 'rentals';
 
@@ -13,7 +13,7 @@ export const RentalService = {
 		try {
 			const now = new Date().toISOString();
 			const response = await databases.listDocuments<Rental>(
-				DATABASE_ID,
+				PUBLIC_DATABASE_ID,
 				TABLE_ID,
 				[
 					Query.equal('userId', userId),
@@ -35,7 +35,7 @@ export const RentalService = {
 		try {
 			const now = new Date().toISOString();
 			const response = await databases.listDocuments<Rental>(
-				DATABASE_ID,
+				PUBLIC_DATABASE_ID,
 				TABLE_ID,
 				[
 					Query.equal('userId', userId),
@@ -66,7 +66,7 @@ export const RentalService = {
 			expiresAt.setDate(rentedAt.getDate() + durationDays);
 
 			return await databases.createDocument<Rental>(
-				DATABASE_ID,
+				PUBLIC_DATABASE_ID,
 				TABLE_ID,
 				ID.unique(),
 				{

@@ -1,7 +1,7 @@
 import { databases } from '$lib/appwrite';
 import { Query } from 'appwrite';
 import type { Movie } from '$lib/types';
-import { DATABASE_ID } from '$env/static/private';
+import { PUBLIC_DATABASE_ID } from '$env/static/public';
 
 const TABLE_ID = 'movies';
 
@@ -12,7 +12,7 @@ export const MovieService = {
 	async getAll(limit = 25): Promise<Movie[]> {
 		try {
 			const response = await databases.listDocuments<Movie>(
-				DATABASE_ID,
+				PUBLIC_DATABASE_ID,
 				TABLE_ID,
 				[Query.limit(limit)]
 			);
@@ -29,7 +29,7 @@ export const MovieService = {
 	async getById(movieId: string): Promise<Movie> {
 		try {
 			return await databases.getDocument<Movie>(
-				DATABASE_ID,
+				PUBLIC_DATABASE_ID,
 				TABLE_ID,
 				movieId
 			);
@@ -45,7 +45,7 @@ export const MovieService = {
 	async getNewAndHot(limit = 10): Promise<Movie[]> {
 		try {
 			const response = await databases.listDocuments<Movie>(
-				DATABASE_ID,
+				PUBLIC_DATABASE_ID,
 				TABLE_ID,
 				[
 					Query.orderDesc('releaseDate'),
@@ -67,7 +67,7 @@ export const MovieService = {
 		
 		try {
 			const response = await databases.listDocuments<Movie>(
-				DATABASE_ID,
+				PUBLIC_DATABASE_ID,
 				TABLE_ID,
 				[
 					// Appwrite searches on full-text indexed columns (searchKeywords)
