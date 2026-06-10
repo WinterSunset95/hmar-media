@@ -4,14 +4,16 @@
   import { auth } from "$lib/stores/auth.svelte";
 
   const handleLogout = async () => {
-    auth.logout()
+    await auth.logout()
     goto('/home')
   }
 </script>
 
-<div>
-  Hello from the profile page
+<div class="flex w-full justify-center items-center p-32 text-2xl">
+  This page has not yet been implemented
 </div>
-<Button class="" onclick={handleLogout} disabled={false}>
-  Logout
-</Button>
+<div class="flex w-full justify-center items-center p-32 text-2xl">
+  <Button class="" onclick={handleLogout} disabled={false}>
+    Logout
+  </Button>
+</div>
