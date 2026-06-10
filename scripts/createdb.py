@@ -1,12 +1,19 @@
+import os
+
 from appwrite.client import Client
 from appwrite.enums.relation_mutate import RelationMutate
 from appwrite.enums.relationship_type import RelationshipType
 from appwrite.services.tables_db import TablesDB
+from dotenv import load_dotenv
+
+load_dotenv()
+
+api_key = os.getenv("KEY")
 
 client = (Client()
           .set_endpoint('https://appwrite.wintersunset95.in/v1')
           .set_project("6a25699200297850cf39")
-          .set_key("standard_f1755e70e14ae6502aa5d19d3bb28c4f9ab7c9f10bab7b94c2b6aac06bf4d2f7fa71078604fbbc9a3bf8af3bf2c7f959cbbfedc4403cd3bde2fe84ae35e0d79b84af804d1994569b9f67e9951a658978ca6abb438e4711f621273b28200f052ad5140a2d217c26c32e50e35ef8c96e856ba2facdc22d321c2b48f767953ce783"))
+          .set_key(api_key))
 
 tablesDb = TablesDB(client)
 
