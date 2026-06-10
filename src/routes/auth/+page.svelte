@@ -25,7 +25,7 @@
   let errorMessage = $state('')
 
   $effect(() => {
-    if (toast !== '' && errorMessage.length > 0) {
+    if (errorMessage !== '' && errorMessage.length > 0) {
       toast(errorMessage)
     }
   })
