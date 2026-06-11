@@ -1,35 +1,50 @@
-import { Client, Users } from 'node-appwrite';
+import { Client, Users, Databases } from 'node-appwrite';
 
 // This Appwrite function will be executed every time your function is triggered
 export default async ({ req, res, log, error }) => {
-  // You can use the Appwrite SDK to interact with other services
-  // For this example, we're using the Users service
+  const eventHeader = req.headers['x-appwrite-event'] ?? req.headers['x-test-event'] ?? '';
+
+  console.log("Event: ", eventHeader)
+
+  if (!eventHeader.includes('users.') || !eventHeader.includes('.create')) {
+    error(`Critical failure: Not a user creation event!`)
+    return res.json({
+      error: "Not a user creation event!",
+      event: eventHeader
+    })
+  }
+
+  const user = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
+  const userId = user.$id;
+
+  if (!userId) {
+    error("Critical failure: No user id found in payload")
+    return res.json({ success: false }, 400)
+  }
+
+  log(`Intercepted new user signup: ${userId}. Syncing to database`)
+
   const client = new Client()
-    .setEndpoint(process.env.APPWRITE_FUNCTION_API_ENDPOINT)
-    .setProject(process.env.APPWRITE_FUNCTION_PROJECT_ID)
-    .setKey(req.headers['x-appwrite-key'] ?? '');
-  const users = new Users(client);
+    .setEndpoint('https://appwrite.wintersunset95.in/v1') 
+    .setProject('6a25699200297850cf39')
+    .setKey(process.env.ADMIN_API_KEY); // Failsafe authentication
+
+  const databases = new Databases(client)
 
   try {
-    const response = await users.list();
-    // Log messages and errors to the Appwrite Console
-    // These logs won't be seen by your end users
-    log(`Total users: ${response.total}`);
-  } catch(err) {
-    error("Could not list users: " + err.message);
+    await databases.createDocument(
+      '6a256ab3002cc4f2403e',
+      'userprofiles',
+      userId,
+      {
+        userId: userId,
+        preferences: JSON.stringify({ theme: 'dark', notifications: true })
+      }
+    )
+    log(`Profile successfully forged for user ${userId}`)
+    return res.json({ success: true, userId })
+  } catch (err) {
+    error(`Database sync failed for ${userId}: ${err.message}`)
+    return res.json({ success: false, error: err.message}, 500)
   }
-
-  // The req object contains the request data
-  if (req.path === "/ping") {
-    // Use res object to respond with text(), json(), or binary()
-    // Don't forget to return a response!
-    return res.text("Pong");
-  }
-
-  return res.json({
-    motto: "Build like a team of hundreds_",
-    learn: "https://appwrite.io/docs",
-    connect: "https://appwrite.io/discord",
-    getInspired: "https://builtwith.appwrite.io",
-  });
 };
