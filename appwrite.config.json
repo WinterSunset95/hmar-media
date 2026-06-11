@@ -1,0 +1,419 @@
+{
+    "projectId": "6a25699200297850cf39",
+    "projectName": "hmar-media",
+    "settings": {
+        "services": {
+            "account": true,
+            "avatars": true,
+            "databases": true,
+            "locale": true,
+            "health": true,
+            "storage": true,
+            "teams": true,
+            "users": true,
+            "sites": true,
+            "functions": true,
+            "graphql": true,
+            "messaging": true
+        },
+        "auth": {
+            "methods": {
+                "jwt": true,
+                "phone": true,
+                "invites": true,
+                "anonymous": true,
+                "email-otp": true,
+                "magic-url": true,
+                "email-password": true
+            },
+            "security": {
+                "duration": 31536000,
+                "limit": 0,
+                "sessionsLimit": 10,
+                "passwordHistory": 0,
+                "passwordDictionary": false,
+                "personalDataCheck": false,
+                "sessionAlerts": false,
+                "mockNumbers": []
+            }
+        }
+    },
+    "functions": [
+        {
+            "$id": "syncprofile",
+            "name": "syncProfile",
+            "runtime": "node-16.0",
+            "buildSpecification": "s-0.5vcpu-512mb",
+            "runtimeSpecification": "s-0.5vcpu-512mb",
+            "execute": [
+                "any"
+            ],
+            "events": [],
+            "scopes": [
+                "users.read"
+            ],
+            "schedule": "",
+            "timeout": 15,
+            "enabled": true,
+            "logging": true,
+            "entrypoint": "src/main.js",
+            "commands": "npm install",
+            "ignore": [
+                "node_modules",
+                ".npm"
+            ],
+            "path": "functions/syncProfile"
+        }
+    ],
+    "sites": [
+        {
+            "$id": "6a27ce01003414720af8",
+            "name": "hmar-media",
+            "path": "sites/hmar-media",
+            "framework": "sveltekit",
+            "enabled": true,
+            "logging": true,
+            "timeout": 30,
+            "buildRuntime": "node-22",
+            "adapter": "static",
+            "installCommand": "npm install",
+            "buildCommand": "npm run build",
+            "outputDirectory": "./build",
+            "fallbackFile": "",
+            "startCommand": "",
+            "deploymentRetention": 0
+        }
+    ],
+    "tablesDB": [
+        {
+            "$id": "6a256ab3002cc4f2403e",
+            "name": "hmar-media",
+            "enabled": true
+        }
+    ],
+    "tables": [
+        {
+            "$id": "movies",
+            "$permissions": [
+                "read(\"any\")"
+            ],
+            "databaseId": "6a256ab3002cc4f2403e",
+            "name": "Movies",
+            "enabled": true,
+            "rowSecurity": false,
+            "columns": [
+                {
+                    "key": "title",
+                    "type": "text",
+                    "required": true,
+                    "array": false,
+                    "default": null,
+                    "encrypt": false
+                },
+                {
+                    "key": "description",
+                    "type": "text",
+                    "required": false,
+                    "array": false,
+                    "default": null,
+                    "encrypt": false
+                },
+                {
+                    "key": "releaseDate",
+                    "type": "text",
+                    "required": true,
+                    "array": false,
+                    "default": null,
+                    "encrypt": false
+                },
+                {
+                    "key": "rentPrice",
+                    "type": "integer",
+                    "required": true,
+                    "array": false,
+                    "default": null,
+                    "min": -9223372036854775808,
+                    "max": 9223372036854775807
+                },
+                {
+                    "key": "posterId",
+                    "type": "text",
+                    "required": false,
+                    "array": false,
+                    "default": null,
+                    "encrypt": false
+                },
+                {
+                    "key": "streamId",
+                    "type": "text",
+                    "required": false,
+                    "array": false,
+                    "default": null,
+                    "encrypt": false
+                },
+                {
+                    "key": "interactions",
+                    "type": "relationship",
+                    "required": false,
+                    "array": false,
+                    "relatedTable": "interactions",
+                    "relationType": "manyToOne",
+                    "twoWay": true,
+                    "twoWayKey": "movie",
+                    "onDelete": "cascade",
+                    "side": "child"
+                },
+                {
+                    "key": "rentals",
+                    "type": "relationship",
+                    "required": false,
+                    "array": false,
+                    "relatedTable": "rentals",
+                    "relationType": "manyToOne",
+                    "twoWay": true,
+                    "twoWayKey": "movie",
+                    "onDelete": "restrict",
+                    "side": "child"
+                },
+                {
+                    "key": "searchKeywords",
+                    "type": "text",
+                    "required": false,
+                    "array": true,
+                    "default": null,
+                    "encrypt": false
+                }
+            ],
+            "indexes": [
+                {
+                    "key": "idx_release_date",
+                    "type": "key",
+                    "status": "available",
+                    "columns": [
+                        "releaseDate"
+                    ],
+                    "orders": [
+                        "desc"
+                    ]
+                }
+            ]
+        },
+        {
+            "$id": "userprofiles",
+            "$permissions": [
+                "create(\"guests\")",
+                "read(\"guests\")",
+                "update(\"guests\")",
+                "delete(\"guests\")"
+            ],
+            "databaseId": "6a256ab3002cc4f2403e",
+            "name": "UserProfiles",
+            "enabled": true,
+            "rowSecurity": false,
+            "columns": [
+                {
+                    "key": "userId",
+                    "type": "text",
+                    "required": true,
+                    "array": false,
+                    "default": null,
+                    "encrypt": false
+                },
+                {
+                    "key": "avatarId",
+                    "type": "text",
+                    "required": false,
+                    "array": false,
+                    "default": null,
+                    "encrypt": false
+                },
+                {
+                    "key": "preferences",
+                    "type": "text",
+                    "required": false,
+                    "array": false,
+                    "default": null,
+                    "encrypt": false
+                }
+            ],
+            "indexes": [
+                {
+                    "key": "idx_user_id",
+                    "type": "unique",
+                    "status": "available",
+                    "columns": [
+                        "userId"
+                    ],
+                    "orders": [
+                        "asc"
+                    ]
+                }
+            ]
+        },
+        {
+            "$id": "rentals",
+            "$permissions": [
+                "create(\"users\")",
+                "read(\"users\")",
+                "update(\"users\")",
+                "delete(\"users\")"
+            ],
+            "databaseId": "6a256ab3002cc4f2403e",
+            "name": "Rentals",
+            "enabled": true,
+            "rowSecurity": false,
+            "columns": [
+                {
+                    "key": "userId",
+                    "type": "text",
+                    "required": true,
+                    "array": false,
+                    "default": null,
+                    "encrypt": false
+                },
+                {
+                    "key": "rentedAt",
+                    "type": "datetime",
+                    "required": true,
+                    "array": false,
+                    "default": null,
+                    "format": ""
+                },
+                {
+                    "key": "expiresAt",
+                    "type": "datetime",
+                    "required": true,
+                    "array": false,
+                    "default": null,
+                    "format": ""
+                },
+                {
+                    "key": "paymentReference",
+                    "type": "text",
+                    "required": false,
+                    "array": false,
+                    "default": null,
+                    "encrypt": false
+                },
+                {
+                    "key": "movie",
+                    "type": "relationship",
+                    "required": false,
+                    "array": false,
+                    "relatedTable": "movies",
+                    "relationType": "manyToOne",
+                    "twoWay": true,
+                    "twoWayKey": "rentals",
+                    "onDelete": "restrict",
+                    "side": "parent"
+                }
+            ],
+            "indexes": [
+                {
+                    "key": "idx_user_rentals",
+                    "type": "key",
+                    "status": "available",
+                    "columns": [
+                        "userId",
+                        "expiresAt"
+                    ],
+                    "orders": [
+                        "asc",
+                        "desc"
+                    ]
+                }
+            ]
+        },
+        {
+            "$id": "interactions",
+            "$permissions": [
+                "create(\"users\")",
+                "read(\"users\")",
+                "update(\"users\")",
+                "delete(\"users\")"
+            ],
+            "databaseId": "6a256ab3002cc4f2403e",
+            "name": "Interactions",
+            "enabled": true,
+            "rowSecurity": false,
+            "columns": [
+                {
+                    "key": "userId",
+                    "type": "text",
+                    "required": true,
+                    "array": false,
+                    "default": null,
+                    "encrypt": false
+                },
+                {
+                    "key": "movie",
+                    "type": "relationship",
+                    "required": false,
+                    "array": false,
+                    "relatedTable": "movies",
+                    "relationType": "manyToOne",
+                    "twoWay": true,
+                    "twoWayKey": "interactions",
+                    "onDelete": "cascade",
+                    "side": "parent"
+                },
+                {
+                    "key": "type",
+                    "type": "text",
+                    "required": true,
+                    "array": false,
+                    "default": null,
+                    "encrypt": false
+                },
+                {
+                    "key": "timestamp",
+                    "type": "text",
+                    "required": true,
+                    "array": false,
+                    "default": null,
+                    "encrypt": false
+                },
+                {
+                    "key": "progressSeconds",
+                    "type": "integer",
+                    "required": false,
+                    "array": false,
+                    "default": null,
+                    "min": -9223372036854775808,
+                    "max": 9223372036854775807
+                }
+            ],
+            "indexes": [
+                {
+                    "key": "idx_user_movie_type",
+                    "type": "key",
+                    "status": "available",
+                    "columns": [
+                        "userId",
+                        "type"
+                    ],
+                    "orders": [
+                        "asc",
+                        "asc"
+                    ]
+                }
+            ]
+        }
+    ],
+    "buckets": [
+        {
+            "$id": "6a2584b80016321b8188",
+            "$permissions": [],
+            "fileSecurity": false,
+            "name": "hmar-media",
+            "enabled": true,
+            "maximumFileSize": 30000000,
+            "allowedFileExtensions": [],
+            "compression": "none",
+            "encryption": true,
+            "antivirus": true
+        }
+    ],
+    "teams": [],
+    "topics": []
+}
