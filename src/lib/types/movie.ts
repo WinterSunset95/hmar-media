@@ -1,6 +1,6 @@
 import type { Models } from "appwrite";
 
-export interface Movie extends Models.Document {
+export interface Movie extends Models.Row {
 	title: string;
 	description?: string;
 	releaseDate: string; // ISO 8601 string from Appwrite Datetime column

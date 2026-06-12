@@ -38,8 +38,8 @@
 
 <Drawer.Root open={show} onOpenChange={handleOpenChange}>
 	<Drawer.Portal>
-		<Drawer.Overlay class="fixed inset-0 bg-black/80 backdrop-blur-md" />
-		<Drawer.Content class="bg-background flex flex-col fixed bottom-0 left-0 right-0 max-h-[90vh] mx-auto sm:max-w-xl rounded-t-2xl border-border/80 outline-none overflow-hidden">
+		<Drawer.Overlay class="fixed inset-0 bg-black/80 backdrop-blur-md opacity-0" />
+		<Drawer.Content class="bg-background flex flex-col fixed bottom-0 left-0 right-0 h-full mx-auto sm:max-w-xl rounded-t-2xl border-border/80 outline-none overflow-hidden">
 			
 			{#if movie}
 				<!-- Screen Reader Accessibility Requirements -->

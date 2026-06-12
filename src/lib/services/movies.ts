@@ -1,4 +1,4 @@
-import { databases } from '$lib/appwrite';
+import { tablesdb } from '$lib/appwrite';
 import { Query } from 'appwrite';
 import type { Movie } from '$lib/types';
 import { PUBLIC_DATABASE_ID } from '$env/static/public';
@@ -11,12 +11,12 @@ export const MovieService = {
 	 */
 	async getAll(limit = 25): Promise<Movie[]> {
 		try {
-			const response = await databases.listDocuments<Movie>(
-				PUBLIC_DATABASE_ID,
-				TABLE_ID,
-				[Query.limit(limit)]
-			);
-			return response.documents;
+			const response = await tablesdb.listRows<Movie>({
+				databaseId: PUBLIC_DATABASE_ID,
+				tableId: TABLE_ID,
+				queries: [Query.limit(limit)]
+      });
+			return response.rows;
 		} catch (error) {
 			console.error('[MovieService.getAll] Failed to fetch movies:', error);
 			throw error;
@@ -28,11 +28,11 @@ export const MovieService = {
 	 */
 	async getById(movieId: string): Promise<Movie> {
 		try {
-			return await databases.getDocument<Movie>(
-				PUBLIC_DATABASE_ID,
-				TABLE_ID,
-				movieId
-			);
+			return await tablesdb.getRow<Movie>({
+				databaseId: PUBLIC_DATABASE_ID,
+				tableId: TABLE_ID,
+				rowId: movieId
+      });
 		} catch (error) {
 			console.error(`[MovieService.getById] Failed to fetch movie ${movieId}:`, error);
 			throw error;
@@ -44,15 +44,15 @@ export const MovieService = {
 	 */
 	async getNewAndHot(limit = 10): Promise<Movie[]> {
 		try {
-			const response = await databases.listDocuments<Movie>(
-				PUBLIC_DATABASE_ID,
-				TABLE_ID,
-				[
+			const response = await tablesdb.listRows<Movie>({
+				databaseId: PUBLIC_DATABASE_ID,
+				tableId: TABLE_ID,
+				queries: [
 					Query.orderDesc('releaseDate'),
 					Query.limit(limit)
 				]
-			);
-			return response.documents;
+      });
+			return response.rows;
 		} catch (error) {
 			console.error('[MovieService.getNewAndHot] Failed:', error);
 			throw error;
@@ -66,10 +66,10 @@ export const MovieService = {
 		if (!searchTerm.trim()) return [];
 		
 		try {
-			const response = await databases.listDocuments<Movie>(
-				PUBLIC_DATABASE_ID,
-				TABLE_ID,
-				[
+			const response = await tablesdb.listRows<Movie>({
+				databaseId: PUBLIC_DATABASE_ID,
+				tableId: TABLE_ID,
+				queries: [
 					// Appwrite searches on full-text indexed columns (searchKeywords)
 					Query.or([
 						Query.contains('title', searchTerm),
@@ -77,8 +77,8 @@ export const MovieService = {
 					]),
 					Query.limit(limit)
 				]
-			);
-			return response.documents;
+      });
+			return response.rows;
 		} catch (error) {
 			console.error(`[MovieService.search] Failed for term "${searchTerm}":`, error);
 			throw error;
