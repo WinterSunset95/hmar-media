@@ -1,15 +1,23 @@
 import { account } from "$lib/appwrite"
 import { redirect } from "@sveltejs/kit"
+import { auth } from "$lib/stores/auth.svelte";
 
 export const ssr = false;
 
-export const load = async ({ url }) => {
-  let currentUser = null;
+let isAppBooted = false;
 
-  try {
-    currentUser = await account.get()
-  } catch {
-    currentUser = null
+export const load = async ({ url }) => {
+  let currentUser = auth.user;
+
+  if (!isAppBooted || !currentUser) {
+    console.time("[Auth] Network Ping")
+    try {
+      currentUser = await account.get()
+    } catch {
+      currentUser = null
+    }
+    console.timeEnd("[Auth] Network Ping")
+    isAppBooted = true;
   }
 
   const isAuthRoute = url.pathname.startsWith('/auth');
@@ -19,6 +27,10 @@ export const load = async ({ url }) => {
   }
 
   if (currentUser && isAuthRoute) {
+    throw redirect(307, '/home')
+  }
+
+  if (currentUser && url.pathname === '/') {
     throw redirect(307, '/home')
   }
 
