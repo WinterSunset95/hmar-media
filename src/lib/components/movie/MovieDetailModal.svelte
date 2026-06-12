@@ -2,6 +2,7 @@
 	import type { Movie } from '$lib/types';
 	import { getPosterUrl } from '$lib/utils/movie';
 	import { X, Play, Tv, Check, Plus, AlertCircle } from '@lucide/svelte';
+  import { goto, pushState } from '$app/navigation';
 	
 	// Shadcn Component Imports
 	import * as Drawer from '$lib/components/ui/drawer';
@@ -34,6 +35,12 @@
 	function handleOpenChange(isOpen: boolean) {
 		if (!isOpen) onClose();
 	}
+
+  function handlePlay() {
+    console.log("Navigating to /watch/", movie.$id)
+    goto(`/watch/${movie.$id}`)
+    // https://streaming.wintersunset95.in/Items/88b29a353a048422945c3c4951af24f6/Download?api_key=f17139d3d67d4674bb9b7cab917577ac
+  }
 </script>
 
 <Drawer.Root open={show} onOpenChange={handleOpenChange}>
@@ -96,7 +103,7 @@
 					<!-- Action Row -->
 					<div class="flex items-center gap-3 pt-2">
 						{#if isRented}
-							<Button variant="secondary" class="flex-1 h-12 font-bold shadow-sm text-black bg-white hover:bg-white/90">
+							<Button variant="secondary" class="flex-1 h-12 font-bold shadow-sm text-black bg-white hover:bg-white/90" onclick={handlePlay}>
 								<Play class="w-4 h-4 mr-2 fill-black" />
 								Watch Film
 							</Button>

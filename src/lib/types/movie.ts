@@ -6,6 +6,6 @@ export interface Movie extends Models.Row {
 	releaseDate: string; // ISO 8601 string from Appwrite Datetime column
 	rentPrice: number;   // Stored in paisa/cents to prevent floating-point bugs
 	posterId?: string;   // Appwrite Storage bucket file ID
-	jellyfinStreamId?: string;
+	streamId?: string;
 	searchKeywords?: string[];
 }
