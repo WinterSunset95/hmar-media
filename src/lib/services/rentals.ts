@@ -1,6 +1,6 @@
-import { databases } from '$lib/appwrite';
+import { databases, tablesdb } from '$lib/appwrite';
 import { Query, ID } from 'appwrite';
-import type { Rental } from '$lib/types';
+import type { Movie, Rental } from '$lib/types';
 import { PUBLIC_DATABASE_ID } from '$env/static/public';
 
 const TABLE_ID = 'rentals';
@@ -12,16 +12,17 @@ export const RentalService = {
 	async getActiveUserRentals(userId: string): Promise<Rental[]> {
 		try {
 			const now = new Date().toISOString();
-			const response = await databases.listDocuments<Rental>(
-				PUBLIC_DATABASE_ID,
-				TABLE_ID,
-				[
-					Query.equal('userId', userId),
-					Query.greaterThan('expiresAt', now),
-					Query.orderDesc('expiresAt')
-				]
-			);
-			return response.documents;
+      const response = await tablesdb.listRows<Rental>({
+        databaseId: PUBLIC_DATABASE_ID,
+        tableId: TABLE_ID,
+        queries: [
+          Query.equal('userId', userId),
+          Query.greaterThan('expiresAt', now),
+          Query.orderDesc('expiresAt'),
+          Query.select(["*", 'movie.*'])
+        ],
+      })
+			return response.rows;
 		} catch (error) {
 			console.error('[RentalService.getActiveUserRentals] Failed:', error);
 			throw error;
@@ -34,16 +35,16 @@ export const RentalService = {
 	async verifyAccess(userId: string, movieId: string): Promise<boolean> {
 		try {
 			const now = new Date().toISOString();
-			const response = await databases.listDocuments<Rental>(
-				PUBLIC_DATABASE_ID,
-				TABLE_ID,
-				[
+			const response = await tablesdb.listRows<Rental>({
+				databaseId: PUBLIC_DATABASE_ID,
+				tableId: TABLE_ID,
+				queries: [
 					Query.equal('userId', userId),
 					Query.equal('movie', movieId),
 					Query.greaterThan('expiresAt', now),
 					Query.limit(1)
 				]
-			);
+      });
 			return response.total > 0;
 		} catch (error) {
 			console.error(`[RentalService.verifyAccess] Failed for movie ${movieId}:`, error);
@@ -59,26 +60,26 @@ export const RentalService = {
 	 * * Real checkouts should fire a webhook from Razorpay/Stripe to a secure Appwrite Serverless 
 	 * Function, which uses a system API key to write this document.
 	 */
-	async mockPurchase(userId: string, movieId: string, durationDays = 2): Promise<Rental> {
+	async mockPurchase(userId: string, movie: Movie, durationDays = 2): Promise<Rental> {
 		try {
 			const rentedAt = new Date();
 			const expiresAt = new Date();
 			expiresAt.setDate(rentedAt.getDate() + durationDays);
 
-			return await databases.createDocument<Rental>(
-				PUBLIC_DATABASE_ID,
-				TABLE_ID,
-				ID.unique(),
-				{
+			return await tablesdb.createRow<Rental>({
+				databaseId: PUBLIC_DATABASE_ID,
+				tableId: TABLE_ID,
+				rowId: ID.unique(),
+				data: {
 					userId,
-					movie: movieId,
+					movie: movie,
 					rentedAt: rentedAt.toISOString(),
 					expiresAt: expiresAt.toISOString(),
 					paymentReference: 'MOCK_UPI_TXN_' + Math.random().toString(36).substr(2, 9).toUpperCase()
 				}
-			);
+      });
 		} catch (error) {
-			console.error(`[RentalService.mockPurchase] Failed for movie ${movieId}:`, error);
+			console.error(`[RentalService.mockPurchase] Failed for movie ${movie.$id}:`, error);
 			throw error;
 		}
 	}

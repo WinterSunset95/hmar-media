@@ -15,9 +15,9 @@
 	);
 </script>
 
-<div class="flex items-center gap-5 bg-card text-card-foreground p-6 rounded-xl border border-border shadow-sm">
+<div class="flex items-center flex-wrap gap-5 bg-card text-card-foreground p-6 rounded-xl border border-border shadow-sm">
 	<Avatar.Root class="w-20 h-20 border-2 border-primary/20">
-		<Avatar.Image src="" alt={name} class=""/>
+		<Avatar.Image src={`https://picsum.photos/200`} alt={name} class=""/>
 		<Avatar.Fallback class="bg-muted text-lg font-bold text-primary">
 			{initials}
 		</Avatar.Fallback>

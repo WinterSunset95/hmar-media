@@ -12,40 +12,78 @@
 		isRental?: boolean;
 		onAction: (movie: Movie) => void;
 	}>();
+
 </script>
 
-<Card.Root class="flex overflow-hidden h-32 hover:bg-muted/30 transition-colors border-border group">
-	<div class="w-24 shrink-0 relative bg-muted">
+<!-- 
+	Made the entire card an interactive target.
+	flex-row ensures strict horizontal orientation across all viewports.
+-->
+<Card.Root 
+	class="flex flex-row overflow-hidden h-32 w-full hover:bg-muted/30 transition-colors border-border group cursor-pointer shadow-sm" 
+	onclick={() => onAction(movie)}
+>
+	<!-- 
+		Image Wrapper: Fixed width, absolute image to prevent flex stretching weirdness.
+		Added a subtle right border to define the edge against the dark background.
+	-->
+	<div class="w-24 sm:w-28 shrink-0 relative bg-muted border-r border-border/50">
 		<img 
 			src={getPosterUrl(movie)} 
 			alt={movie.title}
-			class="w-full h-full object-cover transition-transform group-hover:scale-105"
+			class="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
 			loading="lazy"
 		/>
 	</div>
 
-	<Card.Content class="p-4 py-3 flex flex-col justify-between w-full h-full">
-		<div>
-			<h4 class="font-bold text-card-foreground leading-tight line-clamp-1">{movie.title}</h4>
+	<!-- 
+		Content Wrapper: min-w-0 is the magic flexbox property that stops 
+		the title text from blowing out the card's width boundaries. 
+		We bypass Card.Content here to avoid Shadcn's aggressive default padding.
+	-->
+	<div class="p-3 sm:p-4 flex flex-1 flex-col justify-between min-w-0">
+		<div class="space-y-1">
+			<!-- Changed line-clamp-1 to truncate for cleaner single-line overflow handling -->
+			<h4 class="font-bold text-card-foreground text-sm sm:text-base leading-tight truncate">
+				{movie.title}
+			</h4>
 			{#if subtext}
-				<p class="text-xs text-muted-foreground mt-1 flex items-center gap-1.5">
-					<Clock class="w-3 h-3" /> {subtext}
+				<p class="text-xs text-muted-foreground flex items-center gap-1.5">
+					<Clock class="w-3.5 h-3.5 shrink-0" /> 
+					<span class="truncate">{subtext}</span>
 				</p>
 			{/if}
 		</div>
 
-		<div class="flex items-center justify-between mt-auto">
+		<div class="flex items-center justify-between mt-auto pt-2">
 			{#if isRental}
-				<Badge variant="default" class="bg-primary/10 text-primary hover:bg-primary/20 border-primary/20">Active Rental</Badge>
-				<Button size="sm" variant="default" class="h-8 shadow-[0_0_10px_rgba(225,29,72,0.3)]" onclick={() => onAction(movie)} disabled={false}>
+				<!-- pointer-events-none stops the badge from hijacking clicks -->
+				<Badge variant="secondary" class="bg-primary/10 text-primary hover:bg-primary/20 border-0 pointer-events-none">
+					Active
+				</Badge>
+				
+				<!-- e.stopPropagation() prevents triggering the card's parent onclick -->
+				<Button 
+					size="sm" 
+					class="h-8 shadow-[0_0_10px_rgba(225,29,72,0.3)] shrink-0" 
+					onclick={(e) => { e.stopPropagation(); onAction(movie); }}
+				>
 					<Play class="w-3.5 h-3.5 mr-1.5 fill-current" /> Watch
 				</Button>
 			{:else}
-				<Badge variant="outline" class="text-[10px] text-muted-foreground">₹{movie.rentPrice / 100}</Badge>
-				<Button size="sm" variant="secondary" class="h-8" onclick={() => onAction(movie)} disabled={false}>
+				<Badge variant="outline" class="text-[10px] text-muted-foreground pointer-events-none">
+					₹{movie.rentPrice / 100}
+				</Badge>
+				
+				<Button 
+					size="sm" 
+					variant="secondary" 
+					class="h-8 shrink-0" 
+					onclick={(e) => { e.stopPropagation(); onAction(movie); }}
+				>
 					Details
 				</Button>
 			{/if}
 		</div>
-	</Card.Content>
+	</div>
 </Card.Root>

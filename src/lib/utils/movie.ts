@@ -8,5 +8,5 @@ export function getPosterUrl(movie: Movie): string {
 	if (movie.posterId && (movie.posterId.startsWith('http') || movie.posterId.startsWith('/'))) {
 		return movie.posterId;
 	}
-	return `https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=600&auto=format&fit=crop`;
+	return `https://picsum.photos/seed/${movie.posterId ?? 'random'}/200/500`;
 }

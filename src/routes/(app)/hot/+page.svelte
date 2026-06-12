@@ -58,7 +58,7 @@
 		const mId = movie.$id;
 
 		try {
-			const added = await InteractionService.toggle(auth.user.$id, mId, 'wishlist');
+			const added = await InteractionService.toggle(auth.user.$id, movie, 'wishlist');
 			if (added) {
 				myWishlistIds.add(mId);
 				toast.success(`Added "${movie.title}" to My List`);
@@ -81,7 +81,7 @@
 		}
 
 		try {
-			await RentalService.mockPurchase(auth.user.$id, movie.$id);
+			await RentalService.mockPurchase(auth.user.$id, movie);
 			myRentedIds.add(movie.$id);
 			myRentedIds = new Set(myRentedIds);
 			toast.success(`Rent Successful! You have 48h to watch "${movie.title}"`);

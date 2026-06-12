@@ -20,7 +20,7 @@
 	onMount(async () => {
 		// Route Guard: Eject to login if unauthenticated
 		if (!auth.user) {
-			goto('/login');
+			goto('/auth');
 			return;
 		}
 
@@ -47,7 +47,7 @@
 		try {
 			await auth.logout();
 			toast.success("Successfully logged out");
-			goto('/login');
+			goto('/auth');
 		} catch (error) {
 			toast.error("Failed to logout securely.");
 		}
