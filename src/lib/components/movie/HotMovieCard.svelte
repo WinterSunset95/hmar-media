@@ -13,7 +13,8 @@
 		myWishlistIds, 
 		isInteractionLoading,
 		onRent, 
-		onToggleWishlist 
+		onToggleWishlist,
+    handleclick
 	} = $props<{
 		movie: Movie;
 		myRentedIds: Set<string>;
@@ -21,6 +22,7 @@
 		isInteractionLoading: boolean;
 		onRent: (movie: Movie) => void;
 		onToggleWishlist: (movie: Movie) => void;
+    handleclick: (movie: Movie) => void
 	}>();
 
 	let isRented = $derived(myRentedIds.has(movie.$id));
@@ -32,7 +34,7 @@
 	let dateString = $derived(releaseDate.toLocaleDateString('en-IN', { month: 'long', day: 'numeric' }));
 </script>
 
-<Card.Root class="overflow-hidden border-border bg-card shadow-lg mb-8 mx-4">
+<Card.Root class="overflow-hidden border-border bg-card shadow-lg mb-8 mx-4" onclick={() => handleclick(movie)}>
 	<!-- Hero Poster Area -->
 	<div class="relative w-full h-64 sm:h-96 bg-muted">
 		<img 
@@ -87,36 +89,36 @@
 	</Card.Content>
 
 	<!-- Actions -->
-	<Card.Footer class="p-5 pt-0 flex gap-3">
-		{#if isRented}
-			<Button variant="secondary" class="flex-1 font-bold shadow-sm">
-				<Play class="w-4 h-4 mr-2 fill-current" />
-				Watch Now
-			</Button>
-		{:else}
-			<Button 
-				variant="default" 
-				class="flex-1 font-bold shadow-[0_0_15px_rgba(225,29,72,0.3)] hover:shadow-[0_0_20px_rgba(225,29,72,0.5)] transition-all"
-				onclick={() => onRent(movie)}
-				disabled={!isReleased}
-			>
-				<Tv class="w-4 h-4 mr-2" />
-				{isReleased ? `Rent ₹${movie.rentPrice / 100}` : 'Coming Soon'}
-			</Button>
-		{/if}
-
-		<Button 
-			variant="outline" 
-			size="icon" 
-			class="shrink-0 border-border"
-			onclick={() => onToggleWishlist(movie)}
-			disabled={isInteractionLoading}
-		>
-			{#if isWishlisted}
-				<Check class="w-5 h-5 text-primary" />
-			{:else}
-				<Plus class="w-5 h-5" />
-			{/if}
-		</Button>
-	</Card.Footer>
+	<!-- <Card.Footer class="p-5 pt-0 flex gap-3"> -->
+	<!-- 	{#if isRented} -->
+	<!-- 		<Button variant="secondary" class="flex-1 font-bold shadow-sm"> -->
+	<!-- 			<Play class="w-4 h-4 mr-2 fill-current" /> -->
+	<!-- 			Watch Now -->
+	<!-- 		</Button> -->
+	<!-- 	{:else} -->
+	<!-- 		<Button  -->
+	<!-- 			variant="default"  -->
+	<!-- 			class="flex-1 font-bold shadow-[0_0_15px_rgba(225,29,72,0.3)] hover:shadow-[0_0_20px_rgba(225,29,72,0.5)] transition-all" -->
+	<!-- 			onclick={() => onRent(movie)} -->
+	<!-- 			disabled={!isReleased} -->
+	<!-- 		> -->
+	<!-- 			<Tv class="w-4 h-4 mr-2" /> -->
+	<!-- 			{isReleased ? `Rent ₹${movie.rentPrice / 100}` : 'Coming Soon'} -->
+	<!-- 		</Button> -->
+	<!-- 	{/if} -->
+	<!---->
+	<!-- 	<Button  -->
+	<!-- 		variant="outline"  -->
+	<!-- 		size="icon"  -->
+	<!-- 		class="shrink-0 border-border" -->
+	<!-- 		onclick={() => onToggleWishlist(movie)} -->
+	<!-- 		disabled={isInteractionLoading} -->
+	<!-- 	> -->
+	<!-- 		{#if isWishlisted} -->
+	<!-- 			<Check class="w-5 h-5 text-primary" /> -->
+	<!-- 		{:else} -->
+	<!-- 			<Plus class="w-5 h-5" /> -->
+	<!-- 		{/if} -->
+	<!-- 	</Button> -->
+	<!-- </Card.Footer> -->
 </Card.Root>

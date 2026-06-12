@@ -10,6 +10,7 @@
 
 	import HotSkeleton from '$lib/components/movie/HotSkeleton.svelte';
 	import HotMovieCard from '$lib/components/movie/HotMovieCard.svelte';
+  import MovieDetailModal from '$lib/components/movie/MovieDetailModal.svelte';
 
 	let trendingMovies = $state<Movie[]>([]);
 	let myWishlistIds = $state<Set<string>>(new Set());
@@ -17,6 +18,8 @@
 	
 	let isLoading = $state(true);
 	let isInteractionLoading = $state(false);
+	let selectedMovie = $state<Movie | null>(null);
+	let showDetailsModal = $state(false);
 
 	onMount(async () => {
 		try {
@@ -89,6 +92,15 @@
 			toast.error("Rental transaction failed");
 		}
 	}
+
+	function openDetails(movie: Movie) {
+		selectedMovie = movie;
+		showDetailsModal = true;
+	}
+
+	function closeDetails() {
+		showDetailsModal = false;
+	}
 </script>
 
 <div class="w-full min-h-screen pb-24 text-foreground bg-background">
@@ -118,8 +130,21 @@
 					{isInteractionLoading}
 					onRent={handleRentMovie}
 					onToggleWishlist={toggleWishlist}
+          handleclick={openDetails}
 				/>
 			{/each}
 		</div>
 	{/if}
 </div>
+
+<!-- Bottom Paywall / Info Modal Drawer -->
+<MovieDetailModal 
+	movie={selectedMovie}
+	show={showDetailsModal}
+	{myRentedIds}
+	{myWishlistIds}
+	{isInteractionLoading}
+	onClose={closeDetails}
+	onRent={handleRentMovie}
+	onToggleWishlist={toggleWishlist}
+/>
