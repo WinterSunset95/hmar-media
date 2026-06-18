@@ -58,7 +58,7 @@
 		<div class="flex items-center justify-between mt-auto pt-2">
 			{#if isRental}
 				<!-- pointer-events-none stops the badge from hijacking clicks -->
-				<Badge variant="secondary" class="bg-primary/10 text-primary hover:bg-primary/20 border-0 pointer-events-none">
+				<Badge variant="secondary" class="bg-primary/10 text-primary hover:bg-primary/20 border-0 pointer-events-none" href>
 					Active
 				</Badge>
 				
@@ -66,12 +66,13 @@
 				<Button 
 					size="sm" 
 					class="h-8 shadow-[0_0_10px_rgba(225,29,72,0.3)] shrink-0" 
-					onclick={(e) => { e.stopPropagation(); onAction(movie); }}
+					onclick={(e: any) => { e.stopPropagation(); onAction(movie); }}
+          disabled={false}
 				>
 					<Play class="w-3.5 h-3.5 mr-1.5 fill-current" /> Watch
 				</Button>
 			{:else}
-				<Badge variant="outline" class="text-[10px] text-muted-foreground pointer-events-none">
+				<Badge href variant="outline" class="text-[10px] text-muted-foreground pointer-events-none">
 					₹{movie.rentPrice / 100}
 				</Badge>
 				
@@ -79,7 +80,7 @@
 					size="sm" 
 					variant="secondary" 
 					class="h-8 shrink-0" 
-					onclick={(e) => { e.stopPropagation(); onAction(movie); }}
+					onclick={(e: any) => { e.stopPropagation(); onAction(movie); }}
 				>
 					Details
 				</Button>

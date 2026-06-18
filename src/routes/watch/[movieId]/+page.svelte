@@ -4,7 +4,7 @@
 	import { auth } from '$lib/stores/auth.svelte';
 	import { RentalService } from '$lib/services/rentals';
 	import { toast } from 'svelte-sonner';
-	import { ArrowLeft, Loader2 } from '@lucide/svelte';
+	import { ArrowLeft, Loader } from '@lucide/svelte';
 	import VideoPlayer from '$lib/components/movie/VideoPlayer.svelte';
   import { MovieService } from '$lib/services/movies';
 
@@ -80,18 +80,18 @@
 	}
 </script>
 
-<div class="w-full h-[100dvh] bg-black text-white overflow-hidden relative selection:bg-primary/30">
+<div class="w-full h-dvh bg-black text-white overflow-hidden relative selection:bg-primary/30">
 	
 	{#if isLoading}
 		<div class="absolute inset-0 flex flex-col items-center justify-center bg-black z-50">
-			<Loader2 class="w-12 h-12 animate-spin text-primary mb-4" />
+			<Loader class="w-12 h-12 animate-spin text-primary mb-4" />
 			<p class="text-sm text-muted-foreground font-mono">Decrypting HLS stream...</p>
 		</div>
 	{:else if hasAccess}
 		
 		<!-- Floating Back Button Override -->
 		<!-- We set z-[60] so it sits physically above the VideoPlayer's internal controls overlay -->
-		<div class="absolute top-4 left-4 sm:top-8 sm:left-8 z-[60] group">
+		<div class="absolute top-4 left-4 sm:top-8 sm:left-8 z-60 group">
 			<button 
 				onclick={goBack}
 				class="p-3 rounded-full bg-black/40 hover:bg-black/80 backdrop-blur-md border border-white/10 text-white/70 hover:text-white transition-all shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
