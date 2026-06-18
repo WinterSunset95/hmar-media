@@ -111,9 +111,26 @@ export const MovieService = {
    * provider: Provider
    */
   getStreamingLink(movie: Movie, provider?: Provider): string {
-    if (!provider || provider === "jellyfin") {
-			return `${JELLYFIN_BASE}/Videos/${movie.streamId}/master.m3u8?api_key=${JELLYFIN_API_KEY}&mediaSourceId=${movie.streamId}`;
-    }
-	  return `https://files.vidstack.io/sprite-fight/hls/stream.m3u8`;
+      if (!provider || provider === "jellyfin") {
+          const queryParams = new URLSearchParams({
+              api_key: JELLYFIN_API_KEY || "",
+              MediaSourceId: movie.streamId || "",
+              DeviceId: "hmar_media_web_client",
+              VideoCodec: "h264",
+              AudioCodec: "aac", // Drops Atmos 5.1 down to browser-friendly AAC
+              TranscodingMaxAudioChannels: "2", // Forces stereo output
+              RequireAvc: "true", // explicitly forbids raw copying of x265/HEVC video
+              SegmentContainer: "ts",
+              MinSegments: "1",
+              BreakOnNonKeyFrames: "True",
+              VideoBitrate: "15000000", // 15Mbps ceiling
+              AudioBitrate: "320000"
+          });
+
+          return `${JELLYFIN_BASE}/Videos/${movie.streamId}/master.m3u8?${queryParams.toString()}`;
+      }
+      
+      // Fallback in-house provider
+      return `https://files.vidstack.io/sprite-fight/hls/stream.m3u8`;
   }
 };
