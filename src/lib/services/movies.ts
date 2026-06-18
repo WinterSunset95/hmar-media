@@ -4,6 +4,10 @@ import type { Movie } from '$lib/types';
 import { PUBLIC_DATABASE_ID } from '$env/static/public';
 
 const TABLE_ID = 'movies';
+const JELLYFIN_BASE = "https://streaming.wintersunset95.in";
+const JELLYFIN_API_KEY = import.meta.env.VITE_JELLYFIN_API_KEY || "";
+
+type Provider = "jellyfin" | "inhouse"
 
 export const MovieService = {
 	/**
@@ -83,5 +87,33 @@ export const MovieService = {
 			console.error(`[MovieService.search] Failed for term "${searchTerm}":`, error);
 			throw error;
 		}
-	}
+	},
+
+  /**
+   * Get the URL of a poster
+   * movie: Movie
+   * provider: Provider
+   */
+  getPosterUrl(movie: Movie, provider?: Provider): string {
+    if (!provider || provider === "jellyfin") {
+      return `${JELLYFIN_BASE}/Items/${movie.posterId}/Images/Primary?api_key=${JELLYFIN_API_KEY}`;
+    } else {
+      if (movie.posterId && (movie.posterId.startsWith('http') || movie.posterId.startsWith('/'))) {
+        return movie.posterId;
+      }
+      return `https://picsum.photos/seed/${movie.posterId ?? 'random'}/200/500`;
+    }
+  },
+
+  /**
+   * Get the streaming url for a movie
+   * movie: Movie
+   * provider: Provider
+   */
+  getStreamingLink(movie: Movie, provider?: Provider): string {
+    if (!provider || provider === "jellyfin") {
+			return `${JELLYFIN_BASE}/Videos/${movie.streamId}/master.m3u8?api_key=${JELLYFIN_API_KEY}&mediaSourceId=${movie.streamId}`;
+    }
+	  return `https://files.vidstack.io/sprite-fight/hls/stream.m3u8`;
+  }
 };

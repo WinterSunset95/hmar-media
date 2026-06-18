@@ -3,10 +3,10 @@
 	import { goto } from '$app/navigation';
 	import { auth } from '$lib/stores/auth.svelte';
 	import { RentalService } from '$lib/services/rentals';
-	import { getPosterUrl } from '$lib/utils/movie';
 	import { toast } from 'svelte-sonner';
 	import { ArrowLeft, Loader2 } from '@lucide/svelte';
 	import VideoPlayer from '$lib/components/movie/VideoPlayer.svelte';
+  import { MovieService } from '$lib/services/movies';
 
 	let { data } = $props();
 	let movie = $derived(data.movie);
@@ -40,14 +40,11 @@
 			}
 
 			// 3. The HLS Stream Construction
-			// Notice we shifted from stream.mp4 to master.m3u8. 
-			// This tells Jellyfin's FFMPEG engine to generate an adaptive HLS playlist.
-			const JELLYFIN_BASE = "https://streaming.wintersunset95.in";
-			const JELLYFIN_API_KEY = import.meta.env.VITE_JELLYFIN_API_KEY || "";
-			
-			streamUrl = `${JELLYFIN_BASE}/Videos/${movie.streamId}/master.m3u8?api_key=${JELLYFIN_API_KEY}`;
+			streamUrl = MovieService.getStreamingLink(movie);
+			// streamUrl = `https://files.vidstack.io/sprite-fight/hls/stream.m3u8`;
       console.log(streamUrl)
       // https://streaming.wintersunset95.in/Items/88b29a353a048422945c3c4951af24f6/Download?api_key=f17139d3d67d4674bb9b7cab917577ac
+      // https://streaming.wintersunset95.in/web/#/details?id=88b29a353a048422945c3c4951af24f6&serverId=083da13b7de34056a064e66d0853387b
 
 			/**
 			 * CAPACITOR MOBILE HACKS:
@@ -107,7 +104,7 @@
 		<!-- The upgraded Video.js Component -->
 		<VideoPlayer 
 			src={streamUrl} 
-			poster={getPosterUrl(movie)} 
+			poster={MovieService.getPosterUrl(movie)} 
 		/>
 		
 	{/if}

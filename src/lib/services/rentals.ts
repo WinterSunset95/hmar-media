@@ -72,7 +72,7 @@ export const RentalService = {
 				rowId: ID.unique(),
 				data: {
 					userId,
-					movie: movie,
+					movie: movie.$id,
 					rentedAt: rentedAt.toISOString(),
 					expiresAt: expiresAt.toISOString(),
 					paymentReference: 'MOCK_UPI_TXN_' + Math.random().toString(36).substr(2, 9).toUpperCase()

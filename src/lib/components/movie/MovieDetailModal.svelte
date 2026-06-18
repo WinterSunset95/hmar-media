@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Movie } from '$lib/types';
-	import { getPosterUrl } from '$lib/utils/movie';
+  import { MovieService } from '$lib/services/movies';
 	import { X, Play, Tv, Check, Plus, AlertCircle } from '@lucide/svelte';
   import { goto, pushState } from '$app/navigation';
 	
@@ -59,7 +59,7 @@
 				<!-- Media Banner Header -->
 				<div 
 					class="relative w-full h-48 sm:h-64 bg-cover bg-center shrink-0"
-					style="background-image: linear-gradient(to top, var(--background) 0%, rgba(0,0,0,0) 100%), url({getPosterUrl(movie)});"
+					style="background-image: linear-gradient(to top, var(--background) 0%, rgba(0,0,0,0) 100%), url({MovieService.getPosterUrl(movie)});"
 				>
 					<!-- Fallback close button for desktop users who don't swipe -->
 					<div class="absolute top-4 right-4 z-50">

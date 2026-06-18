@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Movie } from '$lib/types';
-	import { getPosterUrl } from '$lib/utils/movie';
+  import { MovieService } from '$lib/services/movies';
 	import * as Card from '$lib/components/ui/card';
 
 	let { movie, onclick } = $props<{
@@ -26,7 +26,7 @@
 	-->
 	<Card.Root class="relative w-full aspect-[2/3] rounded-xl overflow-hidden shadow-md transition-transform duration-300 group-hover:scale-[1.03] group-hover:shadow-[0_0_15px_rgba(225,29,72,0.3)] border-border/40 bg-muted/35">
 		<img 
-			src={getPosterUrl(movie)} 
+			src={MovieService.getPosterUrl(movie)} 
 			alt={movie.title}
 			class="w-full h-full object-cover"
 			loading="lazy"

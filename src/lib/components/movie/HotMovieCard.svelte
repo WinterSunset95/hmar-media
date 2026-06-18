@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Movie } from '$lib/types';
-	import { getPosterUrl } from '$lib/utils/movie';
+  import { MovieService } from '$lib/services/movies';
 	import { Play, Tv, Plus, Check, CalendarDays } from '@lucide/svelte';
 	
 	import * as Card from '$lib/components/ui/card';
@@ -38,7 +38,7 @@
 	<!-- Hero Poster Area -->
 	<div class="relative w-full h-64 sm:h-96 bg-muted">
 		<img 
-			src={getPosterUrl(movie)} 
+			src={MovieService.getPosterUrl(movie)} 
 			alt={movie.title}
 			class="w-full h-full object-cover"
 			loading="lazy"

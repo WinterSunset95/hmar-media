@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Movie } from '$lib/types';
-	import { getPosterUrl } from '$lib/utils/movie';
+  import { MovieService } from '$lib/services/movies';
 	import * as Card from '$lib/components/ui/card';
 	import { Button } from '$lib/components/ui/button';
 	import { Badge } from '$lib/components/ui/badge';
@@ -29,7 +29,7 @@
 	-->
 	<div class="w-24 sm:w-28 shrink-0 relative bg-muted border-r border-border/50">
 		<img 
-			src={getPosterUrl(movie)} 
+			src={MovieService.getPosterUrl(movie)} 
 			alt={movie.title}
 			class="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
 			loading="lazy"

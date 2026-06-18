@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Movie } from '$lib/types';
-	import { getPosterUrl } from '$lib/utils/movie';
+  import { MovieService } from '$lib/services/movies';
 	import { Play, Tv, Info } from '@lucide/svelte';
 
 	let { movie, myRentedIds, onRent, onMoreInfo } = $props<{
@@ -16,7 +16,7 @@
 
 <div 
 	class="relative w-full h-[60vh] sm:h-[75vh] flex flex-col justify-end p-6 bg-cover bg-center transition-all duration-700"
-	style="background-image: linear-gradient(to top, var(--background) 0%, rgba(0,0,0,0.4) 60%, rgba(0,0,0,0.7) 100%), url({getPosterUrl(movie)});"
+	style="background-image: linear-gradient(to top, var(--background) 0%, rgba(0,0,0,0.4) 60%, rgba(0,0,0,0.7) 100%), url({MovieService.getPosterUrl(movie)});"
 >
 	<!-- Ambient light diffusion layer -->
 	<div class="absolute inset-0 bg-gradient-to-r from-background/80 via-transparent to-transparent"></div>
